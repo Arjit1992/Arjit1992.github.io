@@ -103,11 +103,11 @@ nav.scrolled {
 }
 
 /* ── FADE-UP ───────────────────────────────────────────── */
-.fu { opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease; }
+.fu { opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
 .fu.vis { opacity:1; transform:translateY(0); }
-.fu.d1 { transition-delay:.1s; }
-.fu.d2 { transition-delay:.2s; }
-.fu.d3 { transition-delay:.3s; }
+.fu.d1 { transition-delay:.15s; }
+.fu.d2 { transition-delay:.3s; }
+.fu.d3 { transition-delay:.45s; }
 
 /* ══════════════════ HERO ══════════════════════════════════ */
 #hero {
@@ -526,7 +526,136 @@ footer {
 }
 footer em { color:var(--blue); font-style:normal; }
 
-/* ══════════════════ RESPONSIVE ═════════════════════════════ */
+/* ══════════════════ SCROLL PATH ════════════════════════════ */
+#scroll-path-wrap {
+  position:fixed; top:0; left:14px; height:100vh; width:46px;
+  z-index:50; pointer-events:none;
+}
+#scroll-path-wrap svg { height:100%; width:100%; overflow:visible; }
+#sp-bg   { stroke:var(--border); stroke-width:2; fill:none; opacity:.5; }
+#sp-fill {
+  stroke:url(#sp-grad); stroke-width:2.5; fill:none;
+  filter:drop-shadow(0 0 6px rgba(88,166,255,.6));
+}
+#sp-dot  {
+  fill:var(--blue);
+  filter:drop-shadow(0 0 8px var(--blue));
+}
+@media (max-width:900px) { #scroll-path-wrap { display:none; } }
+
+/* ══════════════════ RACING / BEYOND THE TERMINAL ═══════════ */
+#racing { padding:6rem 0; position:relative; z-index:1; }
+.race-shell {
+  background:linear-gradient(160deg, #15191F 0%, #0D1117 70%);
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; position:relative;
+}
+.race-head {
+  padding:2.2rem 2.2rem 0;
+  display:flex; align-items:flex-start; justify-content:space-between;
+  flex-wrap:wrap; gap:1rem;
+}
+.race-title {
+  font-family:var(--display); font-size:1.5rem; font-weight:700;
+}
+.race-title em {
+  font-style:normal;
+  background:linear-gradient(90deg, var(--orange), var(--red));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.race-sub { color:var(--secondary); font-size:.88rem; margin-top:.3rem; max-width:480px; }
+.race-rank {
+  font-family:var(--mono); text-align:center;
+  border:1px solid rgba(227,179,65,.4); border-radius:10px;
+  padding:.8rem 1.4rem; background:rgba(227,179,65,.06);
+  box-shadow:0 0 30px rgba(227,179,65,.12);
+}
+.race-rank .pos {
+  font-size:2rem; font-weight:700; color:var(--orange);
+  line-height:1; display:block;
+}
+.race-rank .lbl { font-size:.65rem; color:var(--secondary); margin-top:.3rem; display:block; }
+
+/* track */
+.track {
+  position:relative; height:150px; margin-top:2rem;
+  background:#101418;
+  border-top:1px solid var(--border);
+  overflow:hidden;
+}
+/* lane dashes scrolling */
+.track::before {
+  content:'';
+  position:absolute; left:-100%; right:0; top:50%; height:4px;
+  background:repeating-linear-gradient(90deg,
+    var(--muted) 0 36px, transparent 36px 76px);
+  animation:road 0.7s linear infinite;
+  opacity:.7;
+}
+@keyframes road { to { transform:translateX(76px); } }
+/* edge lines */
+.track::after {
+  content:'';
+  position:absolute; inset:14px 0;
+  border-top:2px solid #21262D; border-bottom:2px solid #21262D;
+  pointer-events:none;
+}
+/* the car */
+.car {
+  position:absolute; top:50%; left:8%;
+  transform:translateY(-58%);
+  animation:carWeave 4.5s ease-in-out infinite;
+  z-index:3;
+}
+@keyframes carWeave {
+  0%,100% { left:6%;  transform:translateY(-58%) rotate(0deg); }
+  25%     { left:55%; transform:translateY(-95%) rotate(-2deg); }
+  50%     { left:72%; transform:translateY(-30%) rotate(2deg); }
+  75%     { left:38%; transform:translateY(-70%) rotate(-1deg); }
+}
+.car svg { display:block; filter:drop-shadow(0 6px 14px rgba(248,81,73,.35)); }
+/* speed lines behind car */
+.speedlines {
+  position:absolute; inset:0; z-index:1; overflow:hidden;
+}
+.sl {
+  position:absolute; height:2px; border-radius:2px;
+  background:linear-gradient(90deg, transparent, rgba(88,166,255,.5));
+  animation:slMove 0.9s linear infinite;
+}
+@keyframes slMove {
+  from { transform:translateX(110vw); }
+  to   { transform:translateX(-140px); }
+}
+/* nitro flame flicker */
+.nitro {
+  animation:nitroFlick .12s steps(2) infinite;
+  transform-origin:right center;
+}
+@keyframes nitroFlick {
+  0%   { opacity:1;  transform:scaleX(1); }
+  100% { opacity:.6; transform:scaleX(.78); }
+}
+/* hud row */
+.race-hud {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border);
+}
+.hud-cell {
+  padding:1.3rem 1rem; text-align:center;
+  border-right:1px solid var(--border);
+}
+.hud-cell:last-child { border-right:none; }
+.hud-ico { font-size:1.3rem; margin-bottom:.35rem; }
+.hud-t { font-size:.85rem; font-weight:600; margin-bottom:.15rem; }
+.hud-d { font-family:var(--mono); font-size:.68rem; color:var(--secondary); line-height:1.6; }
+@media (max-width:700px) {
+  .race-hud { grid-template-columns:1fr; }
+  .hud-cell { border-right:none; border-bottom:1px solid var(--border); }
+  .hud-cell:last-child { border-bottom:none; }
+}
+
+
 @media (max-width:900px) {
   .hero-wrap     { grid-template-columns:1fr; }
   .stats-grid    { grid-template-columns:1fr 1fr; }
@@ -542,6 +671,22 @@ footer em { color:var(--blue); font-style:normal; }
 </head>
 <body>
 
+<!-- ── SCROLL PATH ────────────────────────────── -->
+<div id="scroll-path-wrap" aria-hidden="true">
+  <svg viewBox="0 0 46 1000" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="sp-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#58A6FF"/>
+        <stop offset="55%" stop-color="#BC8CFF"/>
+        <stop offset="100%" stop-color="#3FB950"/>
+      </linearGradient>
+    </defs>
+    <path id="sp-bg"   d="M 23 0 C 23 80, 4 120, 4 200 C 4 280, 42 320, 42 400 C 42 480, 4 520, 4 600 C 4 680, 42 720, 42 800 C 42 880, 23 920, 23 1000"/>
+    <path id="sp-fill" d="M 23 0 C 23 80, 4 120, 4 200 C 4 280, 42 320, 42 400 C 42 480, 4 520, 4 600 C 4 680, 42 720, 42 800 C 42 880, 23 920, 23 1000"/>
+    <circle id="sp-dot" r="5" cx="23" cy="0"/>
+  </svg>
+</div>
+
 <!-- ── NAV ────────────────────────────────────── -->
 <nav id="nav">
   <div class="nav-logo">arjit<em>@devops</em>:~$</div>
@@ -550,6 +695,7 @@ footer em { color:var(--blue); font-style:normal; }
     <li><a href="#skills">Stack</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#education">Education</a></li>
+    <li><a href="#racing">Racing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -567,8 +713,8 @@ footer em { color:var(--blue); font-style:normal; }
       <div class="hero-chips">
         <span class="chip hi">● GCP Certified</span>
         <span class="chip bl">AWS · Azure · GCP</span>
-        <span class="chip">3 yrs experience</span>
-        <span class="chip">Lucknow, India</span>
+        <span class="chip">3+ yrs experience</span>
+        <span class="chip">Gurugram, India</span>
       </div>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-fill"><i class="fa fa-terminal"></i> Get In Touch</a>
@@ -762,7 +908,7 @@ footer em { color:var(--blue); font-style:normal; }
 
     <div class="git-log">
 
-      <!-- Job 1 -->
+      <!-- Job 0 — Skeps (current) -->
       <div class="ge fu">
         <div class="ge-rail">
           <div class="ge-dot main"></div>
@@ -770,8 +916,40 @@ footer em { color:var(--blue); font-style:normal; }
         </div>
         <div class="ge-body">
           <div class="ge-hash">
-            <span>commit a4f9d2e</span>
+            <span>commit c7e2b91</span>
             <span class="branch">HEAD → main · origin/main</span>
+          </div>
+          <div class="ge-title">DevOps Engineer <span style="font-family:var(--mono);font-size:.65rem;color:var(--green);background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);padding:.15rem .5rem;border-radius:4px;vertical-align:middle;margin-left:.4rem">● CURRENT</span></div>
+          <div class="ge-company">Skeps · Gurugram, India</div>
+          <div class="ge-period"><i class="fa fa-clock"></i> November 2025 – Present</div>
+          <ul class="ge-bullets">
+            <li>Own and manage non-production and production deployments end to end, ensuring stable and reliable releases.</li>
+            <li>Handle server setup, configuration, and automation across environments.</li>
+            <li>Build and run deployment workflows through Jenkins, streamlining the release process.</li>
+            <li>Support and unblock developers via the Jira ticketing system — acknowledging, triaging, and resolving infrastructure issues.</li>
+            <li>Provide day-to-day support to development teams on server-side issues, keeping delivery on track.</li>
+          </ul>
+          <div class="ge-tags">
+            <span class="ge-tag">Jenkins</span>
+            <span class="ge-tag">Production Deployments</span>
+            <span class="ge-tag">Server Setup</span>
+            <span class="ge-tag">Automation</span>
+            <span class="ge-tag">Jira</span>
+            <span class="ge-tag">Developer Support</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job 1 -->
+      <div class="ge fu">
+        <div class="ge-rail">
+          <div class="ge-dot old"></div>
+          <div class="ge-line bot"></div>
+        </div>
+        <div class="ge-body">
+          <div class="ge-hash">
+            <span>commit a4f9d2e</span>
+            <span class="branch" style="color:var(--muted)">merged</span>
           </div>
           <div class="ge-title">DevOps Engineer</div>
           <div class="ge-company">Shayar Omnichannel Pvt Ltd (Adya) · Hyderabad, India</div>
@@ -856,6 +1034,83 @@ footer em { color:var(--blue); font-style:normal; }
     </div>
   </div>
 </section>
+<!-- ── RACING / BEYOND ────────────────────────── -->
+<section id="racing">
+  <div class="container">
+    <div class="section-head fu">
+      <h2>Beyond the Terminal</h2>
+      <div class="sh-line"></div>
+      <span class="sh-tag" style="color:var(--orange)">nitro: enabled</span>
+    </div>
+
+    <div class="race-shell fu d1">
+      <div class="race-head">
+        <div>
+          <div class="race-title">Need for Speed — <em>All-India Rank #2</em></div>
+          <p class="race-sub">National online championship runner-up. The same instincts that win races — split-second decisions, staying calm at 300 km/h — are what keep production incidents short.</p>
+        </div>
+        <div class="race-rank">
+          <span class="pos">#2</span>
+          <span class="lbl">ALL-INDIA<br>CHAMPIONSHIP</span>
+        </div>
+      </div>
+
+      <div class="track">
+        <div class="speedlines">
+          <div class="sl" style="top:22%; width:130px; animation-delay:0s;   animation-duration:.8s;"></div>
+          <div class="sl" style="top:38%; width:90px;  animation-delay:.25s; animation-duration:1s;"></div>
+          <div class="sl" style="top:55%; width:160px; animation-delay:.5s;  animation-duration:.7s;"></div>
+          <div class="sl" style="top:70%; width:110px; animation-delay:.12s; animation-duration:.95s;"></div>
+          <div class="sl" style="top:84%; width:80px;  animation-delay:.4s;  animation-duration:.85s;"></div>
+        </div>
+        <div class="car">
+          <svg width="120" height="44" viewBox="0 0 120 44">
+            <!-- nitro flames -->
+            <g class="nitro">
+              <polygon points="2,24 18,20 18,28" fill="#58A6FF" opacity=".9"/>
+              <polygon points="8,24 20,22 20,26" fill="#BC8CFF"/>
+            </g>
+            <!-- body -->
+            <path d="M18 30 Q20 18 36 15 L52 12 Q70 9 86 13 L100 17 Q112 19 113 26 L113 30 Q113 33 109 33 L24 33 Q18 33 18 30 Z" fill="#F85149"/>
+            <!-- cabin glass -->
+            <path d="M44 15 L54 13 Q66 11 76 14 L82 16 L78 21 L48 21 Z" fill="#0D1117"/>
+            <path d="M46 16 L54 14.5 Q64 13 73 15 L76 16.5 L74 19.5 L50 19.5 Z" fill="#58A6FF" opacity=".55"/>
+            <!-- stripe -->
+            <path d="M22 27 L110 24 L110 27 L22 30 Z" fill="#E3B341" opacity=".9"/>
+            <!-- spoiler -->
+            <rect x="16" y="13" width="4" height="10" rx="1" fill="#C9342E"/>
+            <rect x="12" y="11" width="14" height="4" rx="2" fill="#F85149"/>
+            <!-- headlight -->
+            <circle cx="110" cy="22" r="2.4" fill="#FFF8DC"/>
+            <!-- wheels -->
+            <circle cx="38" cy="33" r="8" fill="#161B22" stroke="#30363D" stroke-width="2"/>
+            <circle cx="38" cy="33" r="3.4" fill="#8B949E"/>
+            <circle cx="92" cy="33" r="8" fill="#161B22" stroke="#30363D" stroke-width="2"/>
+            <circle cx="92" cy="33" r="3.4" fill="#8B949E"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="race-hud">
+        <div class="hud-cell">
+          <div class="hud-ico">🏎️</div>
+          <div class="hud-t">Racing — National Level</div>
+          <div class="hud-d">2nd All-India · NFS online championship<br>quick decision-making under pressure</div>
+        </div>
+        <div class="hud-cell">
+          <div class="hud-ico">🏀</div>
+          <div class="hud-t">State-Level Athlete</div>
+          <div class="hud-d">Represented state in Basketball &amp; Volleyball<br>teamwork · discipline · competitive spirit</div>
+        </div>
+        <div class="hud-cell">
+          <div class="hud-ico">🎸</div>
+          <div class="hud-t">Guitarist</div>
+          <div class="hud-d">Passionate guitarist &amp; music enthusiast<br>rhythm · creativity · focus</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ── CONTACT ────────────────────────────────── -->
 <section id="contact">
@@ -877,7 +1132,7 @@ footer em { color:var(--blue); font-style:normal; }
             <i class="fa fa-phone"></i> +91 70428 49348
           </div>
           <div class="ct-link">
-            <i class="fa fa-map-marker-alt"></i> Lucknow, India 226016
+            <i class="fa fa-map-marker-alt"></i> Gurugram, India
           </div>
         </div>
       </div>
@@ -896,9 +1151,9 @@ footer em { color:var(--blue); font-style:normal; }
           </div>
           <div class="t-out" style="margin-top:.5rem">
             <span style="color:var(--blue)">name</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"Arjit Jain"</span><br>
-            <span style="color:var(--blue)">role</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"DevOps Engineer"</span><br>
+            <span style="color:var(--blue)">role</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"DevOps Engineer @ Skeps"</span><br>
             <span style="color:var(--blue)">email</span><span style="color:var(--muted)">:</span> <span style="color:var(--orange)">"code.arjitjain@gmail.com"</span><br>
-            <span style="color:var(--blue)">location</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"Lucknow, India"</span><br>
+            <span style="color:var(--blue)">location</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"Gurugram, India"</span><br>
             <span style="color:var(--blue)">clouds</span><span style="color:var(--muted)">:</span> [<span style="color:var(--green)">"GCP"</span>, <span style="color:var(--green)">"AWS"</span>, <span style="color:var(--green)">"Azure"</span>]<br>
             <span style="color:var(--blue)">available</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">true</span><br>
             <span style="color:var(--blue)">certified</span><span style="color:var(--muted)">:</span> <span style="color:var(--green)">"GCP DevOps Engineer"</span>
@@ -916,7 +1171,7 @@ footer em { color:var(--blue); font-style:normal; }
 
 <!-- ── FOOTER ─────────────────────────────────── -->
 <footer>
-  <p>Built for <em>Arjit Jain</em> · 2025 · <em>echo "Thanks for visiting 👋"</em></p>
+  <p>Built for <em>Arjit Jain</em> · 2026 · <em>echo "Thanks for visiting 👋"</em></p>
 </footer>
 
 <!-- ══════════════════ SCRIPTS ═══════════════════════════════ -->
@@ -929,8 +1184,15 @@ window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY
 const fus = document.querySelectorAll('.fu');
 const fuObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
-}, { threshold: 0.1 });
+}, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
 fus.forEach(el => fuObs.observe(el));
+// trigger immediately for elements already in viewport on load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.fu').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('vis');
+  });
+});
 
 /* ── counter animation ── */
 function runCounters(section) {
@@ -955,7 +1217,7 @@ new IntersectionObserver(entries => {
 const termOut = document.getElementById('term-out');
 const steps = [
   { t: 'cmd', s: 'whoami' },
-  { t: 'out', s: 'arjit-jain  role=devops-engineer  location=lucknow', c: 'gr' },
+  { t: 'out', s: 'arjit-jain  role=devops-engineer  location=gurugram', c: 'gr' },
   { t: 'cmd', s: 'cat clouds.txt' },
   { t: 'out', s: '→ GCP  |  AWS  |  Microsoft Azure', c: 'bl' },
   { t: 'cmd', s: 'docker ps --filter status=running' },
@@ -1108,7 +1370,27 @@ function advancePipeline() {
   }
   setTimeout(advancePipeline, 3200);
 }
-setTimeout(advancePipeline, 3200);
+/* ── scroll-following SVG path ── */
+const spFill = document.getElementById('sp-fill');
+const spDot  = document.getElementById('sp-dot');
+if (spFill && spDot) {
+  const pathLen = spFill.getTotalLength();
+  spFill.style.strokeDasharray  = pathLen;
+  spFill.style.strokeDashoffset = pathLen;
+
+  function updatePath() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - innerHeight;
+    const prog = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    spFill.style.strokeDashoffset = pathLen * (1 - prog);
+    const pt = spFill.getPointAtLength(pathLen * prog);
+    spDot.setAttribute('cx', pt.x);
+    spDot.setAttribute('cy', pt.y);
+  }
+  addEventListener('scroll', updatePath, { passive: true });
+  addEventListener('resize', updatePath);
+  updatePath();
+}
 
 </script>
 </body>
